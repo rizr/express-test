@@ -1,5 +1,5 @@
 module.exports = {
-    prod: {},
-    dev: {},
-    test: {}
+  prod: {},
+  dev: {},
+  test: {}
 };
