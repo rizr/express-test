@@ -1,8 +1,6 @@
-var config = require('./config');
-var mongoose = require('mongoose');
+module.exports = (app) => {
+  var mongoose = require('mongoose');
+  var config = app.get('config');
 
-module.exports = mongoose.connect('mongodb://localhost/expresstest', {
-  server: {
-    auto_reconnect: true
-  }
-});
+  mongoose.connect(config.development.db, {server: {auto_reconnect: true}});
+};
