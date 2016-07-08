@@ -1,16 +1,14 @@
 var passport = require('passport');
 
-
 module.exports = {
   Auth(req, res, next) {
-    passport.authenticate('jwt', (error, user, info) => {
+    passport.authenticate('jwt', (error, user) => {
       if (user) {
         req.user = user;
         return next();
       } else {
-        return res.jsonp({
-          error: true,
-          message: info.message
+        return res.json({
+          error: error
         });
       }
     })(req, res);

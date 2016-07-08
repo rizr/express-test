@@ -4,6 +4,7 @@ module.exports = (app) => {
   var LocalStrategy = require('passport-local').Strategy;
   var JWTStrategy = require('passport-jwt').Strategy;
   var FacebookStrategy = require('passport-facebook-token').Strategy;
+  var bcrypt = require('bcrypt');
 
   passport.use(new LocalStrategy(
     {
@@ -15,9 +16,10 @@ module.exports = (app) => {
     (req, email, password, done) => {
       User
         .findOne({email: email})
+        .lean()
         .then(user => {
-          if (!user) return done(null, null, {message: 'User not found'});
-          return done(null, user, null);
+          if (!user) return done(null, {}, 'User not found');
+          if (bcrypt.compareSync(password, user.password)) return done(null, user, null);
         })
         .catch(done);
     }));
@@ -31,11 +33,12 @@ module.exports = (app) => {
       passReqToCallback: true
     },
     (req, payload, done) => {
-
+      console.log(payload);
       User
-        .findOne({id: payload.id})
+        .findOne({_id: payload.id})
+        .lean()
         .then(user => {
-          if (!user) return done(null, null, {message: 'User not found'});
+          if (!user) return done(null, null, 'User not found');
           return done(null, user, null);
         })
         .catch(done);
